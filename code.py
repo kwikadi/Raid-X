@@ -2,24 +2,25 @@ import sys
 import os
 from PyQt4 import QtGui, QtCore
 
-class Example(QtGui.QWidget):
+class Gooey(QtGui.QWidget):
 
     def __init__(self):
-        super(Example, self).__init__()
+        super(Gooey, self).__init__()
 
         self.initUI()
 
     def initUI(self):
 
-        runButton = QtGui.QPushButton("OK")
+        runButton = QtGui.QPushButton("Run")
         cancelButton = QtGui.QPushButton("Cancel")
         browseButton = QtGui.QPushButton("Browse")
-        textEdit = QtGui.QTextEdit()
+        self.destButton = QtGui.QTextEdit("F:")
         dest_folder = QtGui.QLabel('Please select the destination folder:', self)
-        textEdit.setMaximumHeight(dest_folder.sizeHint().height()*2)
+        self.destButton.setMaximumHeight(dest_folder.sizeHint().height()*2)
 
         browseButton.clicked.connect(self.showDialog)
         runButton.clicked.connect(self.actualCode)
+        cancelButton.clicked.connect(QtCore.QCoreApplication.instance().quit)
 
         hbox = QtGui.QHBoxLayout()
         hbox.addStretch(1)
@@ -27,7 +28,7 @@ class Example(QtGui.QWidget):
         hbox.addWidget(cancelButton)
 
         h2box = QtGui.QHBoxLayout()
-        h2box.addWidget(textEdit)
+        h2box.addWidget(self.destButton)
         h2box.addWidget(browseButton)
 
         h3box = QtGui.QHBoxLayout()
@@ -49,12 +50,12 @@ class Example(QtGui.QWidget):
 
     def showDialog(self):
 
-        fname = QtGui.QFileDialog.getOpenFileName(self, 'Open folder', '/home')
+        fname = QtGui.QFileDialog.getOpenFileName(self, 'Open folder', 'C:')
 
-        self.textEdit.setText()
+        self.destButton.setPlainText(fname)
 
     def actualCode(self):
-        f = open('workfile.txt', 'w+')
+        f = open('files.txt', 'w+')
 
         for root, dirs, files in os.walk("F:\\", topdown=True):
 
@@ -84,7 +85,7 @@ class Example(QtGui.QWidget):
 def main():
 
     app = QtGui.QApplication(sys.argv)
-    ex = Example()
+    ex = Gooey()
     sys.exit(app.exec_())
 
 
