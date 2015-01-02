@@ -1,4 +1,5 @@
 import sys
+import win32api
 import os
 from PyQt4 import QtGui, QtCore
 
@@ -15,8 +16,15 @@ class Gooey(QtGui.QWidget):
         cancelButton = QtGui.QPushButton("Cancel")
         browseButton = QtGui.QPushButton("Browse")
         self.destTextField = QtGui.QTextEdit("G:")
-        dest_folder = QtGui.QLabel('Please select the destination folder:', self)
-        self.destTextField.setMaximumHeight(dest_folder.sizeHint().height()*2)
+        destFolderLabel = QtGui.QLabel('Please select the destination folder:', self)
+        self.destTextField.setMaximumHeight(destFolderLabel.sizeHint().height()*2)
+        driveSelectLabel = QtGui.QLabel('Please select the drives you want to backup:', self)
+
+        drivelist=[]
+        drives = win32api.GetLogicalDriveStrings()
+        drives = drives.split('\000')[:-1]
+        for i in drives:
+            drivelist.append(QtGui.QCheckBox(i))
 
         browseButton.clicked.connect(self.showDialog)
         runButton.clicked.connect(self.actualCode)
@@ -32,13 +40,21 @@ class Gooey(QtGui.QWidget):
         h2box.addWidget(browseButton)
 
         h3box = QtGui.QHBoxLayout()
-        h3box.addWidget(dest_folder)
+        h3box.addWidget(destFolderLabel)
+
+        h4box = QtGui.QHBoxLayout()
+        for i in drivelist:
+            h4box.addWidget(i)
+
+        h5box = QtGui.QHBoxLayout()
+        h5box.addWidget(driveSelectLabel)
 
         vbox = QtGui.QVBoxLayout()
-        vbox.addStretch(1)
+        vbox.addLayout(h5box)
+        vbox.addLayout(h4box)
         vbox.addLayout(h3box)
         vbox.addLayout(h2box)
-        #vbox.addSpacing(self,4)
+        vbox.addStretch(1)
         vbox.addLayout(hbox)
 
         self.setLayout(vbox)
