@@ -14,7 +14,7 @@ class Gooey(QtGui.QWidget):
         runButton = QtGui.QPushButton("Run")
         cancelButton = QtGui.QPushButton("Cancel")
         browseButton = QtGui.QPushButton("Browse")
-        self.destTextField = QtGui.QTextEdit("F:")
+        self.destTextField = QtGui.QTextEdit("G:")
         dest_folder = QtGui.QLabel('Please select the destination folder:', self)
         self.destTextField.setMaximumHeight(dest_folder.sizeHint().height()*2)
 
@@ -50,7 +50,7 @@ class Gooey(QtGui.QWidget):
 
     def showDialog(self):
 
-        fname = QtGui.QFileDialog.getExistingDirectory(self, 'Open folder', 'C:')
+        fname = QtGui.QFileDialog.getExistingDirectory(self, 'Open folder', 'G:')
 
         self.destTextField.setPlainText(fname)
 
@@ -62,25 +62,25 @@ class Gooey(QtGui.QWidget):
         if not os.path.exists(new_destination): os.makedirs(new_destination)
         f = open(new_destination +'\\files.txt', 'w+')
 
-        for root, dirs, files in os.walk(source, topdown=True):
+        for root, dirs, files in os.walk(source, topdown=False):
 
             for name in files:
 
-                a = os.path.join(root, name)
-                a = a.replace(source,"")
-                a = new_destination + "\\" + a + ".txt"
+                destpath = os.path.join(root, name)
+                destpath = destpath.replace(source,"")
+                destpath = new_destination + "\\" + destpath + ".txt"
                 #make file here.
                 #Add basic data about file, like where it was taken from and when it was last modified.
-                f.write(a + "\n")
+                f.write(destpath + "\n")
 
             for name in dirs:
 
-                a = os.path.join(root, name)
-                a = a.replace(source,"")
-                a = new_destination + "\\" + a
-                f.write(a + "\n")
-                if not os.path.exists(a):
-                    os.makedirs(a)
+                destpath = os.path.join(root, name)
+                destpath = destpath.replace(source,"")
+                destpath = new_destination + "\\" + destpath
+                f.write(destpath + "\n")
+                if not os.path.exists(destpath):
+                    os.makedirs(destpath)
 
         f.close()
         QtCore.QCoreApplication.instance().quit()
