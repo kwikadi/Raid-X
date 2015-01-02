@@ -56,17 +56,19 @@ class Gooey(QtGui.QWidget):
 
     def actualCode(self):
 
+        source = "F:"
         destination = self.destTextField.toPlainText()
-        f = open('files.txt', 'w+')
-        print destination
-        for root, dirs, files in os.walk("F:\\", topdown=True):
+        new_destination = str(destination) + "\Backup"
+        if not os.path.exists(new_destination): os.makedirs(new_destination)
+        f = open(new_destination +'\\files.txt', 'w+')
+
+        for root, dirs, files in os.walk(source, topdown=True):
 
             for name in files:
 
                 a = os.path.join(root, name)
-                trial = list(a)
-                trial[1] = "+"
-                a = "G:\\" + "".join(trial) + ".txt"
+                a = a.replace(source,"")
+                a = new_destination + "\\" + a + ".txt"
                 #make file here.
                 #Add basic data about file, like where it was taken from and when it was last modified.
                 f.write(a + "\n")
@@ -74,9 +76,8 @@ class Gooey(QtGui.QWidget):
             for name in dirs:
 
                 a = os.path.join(root, name)
-                trial = list(a)
-                trial[1] = "+"
-                a = "G:\\" + "".join(trial)
+                a = a.replace(source,"")
+                a = new_destination + "\\" + a
                 f.write(a + "\n")
                 if not os.path.exists(a):
                     os.makedirs(a)
