@@ -20,7 +20,9 @@ class Gooey(QtGui.QWidget):
         self.destTextField.setMaximumHeight(destFolderLabel.sizeHint().height()*2)
         driveSelectLabel = QtGui.QLabel('Please select the drives you want to backup:', self)
 
-        drivelist=[]
+        global drivelist
+        drivelist = []
+        global drives
         drives = win32api.GetLogicalDriveStrings()
         drives = drives.split('\000')[:-1]
         for i in drives:
@@ -72,7 +74,12 @@ class Gooey(QtGui.QWidget):
 
     def actualCode(self):
 
-        source = "F:"
+        source = "F:" #temporary
+        sources = []
+        for i in drivelist:
+            if i.isChecked():
+                sources.append(drives[drivelist.index(i)])
+
         destination = self.destTextField.toPlainText()
         new_destination = str(destination) + "\Backup"
         if not os.path.exists(new_destination): os.makedirs(new_destination)
