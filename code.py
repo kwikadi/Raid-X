@@ -14,9 +14,9 @@ class Gooey(QtGui.QWidget):
         runButton = QtGui.QPushButton("Run")
         cancelButton = QtGui.QPushButton("Cancel")
         browseButton = QtGui.QPushButton("Browse")
-        self.destButton = QtGui.QTextEdit("F:")
+        self.destTextField = QtGui.QTextEdit("F:")
         dest_folder = QtGui.QLabel('Please select the destination folder:', self)
-        self.destButton.setMaximumHeight(dest_folder.sizeHint().height()*2)
+        self.destTextField.setMaximumHeight(dest_folder.sizeHint().height()*2)
 
         browseButton.clicked.connect(self.showDialog)
         runButton.clicked.connect(self.actualCode)
@@ -28,7 +28,7 @@ class Gooey(QtGui.QWidget):
         hbox.addWidget(cancelButton)
 
         h2box = QtGui.QHBoxLayout()
-        h2box.addWidget(self.destButton)
+        h2box.addWidget(self.destTextField)
         h2box.addWidget(browseButton)
 
         h3box = QtGui.QHBoxLayout()
@@ -50,13 +50,15 @@ class Gooey(QtGui.QWidget):
 
     def showDialog(self):
 
-        fname = QtGui.QFileDialog.getOpenFileName(self, 'Open folder', 'C:')
+        fname = QtGui.QFileDialog.getExistingDirectory(self, 'Open folder', 'C:')
 
-        self.destButton.setPlainText(fname)
+        self.destTextField.setPlainText(fname)
 
     def actualCode(self):
-        f = open('files.txt', 'w+')
 
+        destination = self.destTextField.toPlainText()
+        f = open('files.txt', 'w+')
+        print destination
         for root, dirs, files in os.walk("F:\\", topdown=True):
 
             for name in files:
