@@ -74,7 +74,6 @@ class Gooey(QtGui.QWidget):
 
     def actualCode(self):
 
-        source = "F:" #temporary
         sources = []
         for i in drivelist:
             if i.isChecked():
@@ -84,26 +83,28 @@ class Gooey(QtGui.QWidget):
         new_destination = str(destination) + "\Backup"
         if not os.path.exists(new_destination): os.makedirs(new_destination)
         f = open(new_destination +'\\files.txt', 'w+')
+        for source in sources:
+            for root, dirs, files in os.walk(source, topdown=False):
 
-        for root, dirs, files in os.walk(source, topdown=False):
+                for name in files:
 
-            for name in files:
+                    destpath = os.path.join(root, name)
+                    destpath = destpath.replace(source,"")
+                    temp_source = source.replace(":", " drive")
+                    destpath = new_destination + "\\" + temp_source + "\\" + destpath
+                    #make file here.
+                    #Add basic data about file, like where it was taken from and when it was last modified.
+                    f.write(destpath + "\n")
 
-                destpath = os.path.join(root, name)
-                destpath = destpath.replace(source,"")
-                destpath = new_destination + "\\" + destpath + ".txt"
-                #make file here.
-                #Add basic data about file, like where it was taken from and when it was last modified.
-                f.write(destpath + "\n")
+                for name in dirs:
 
-            for name in dirs:
-
-                destpath = os.path.join(root, name)
-                destpath = destpath.replace(source,"")
-                destpath = new_destination + "\\" + destpath
-                f.write(destpath + "\n")
-                if not os.path.exists(destpath):
-                    os.makedirs(destpath)
+                    destpath = os.path.join(root, name)
+                    destpath = destpath.replace(source,"")
+                    temp_source = source.replace(":", " drive")
+                    destpath = new_destination + "\\" + temp_source + "\\" + destpath
+                    f.write(destpath + "\n")
+                    if not os.path.exists(destpath):
+                        os.makedirs(destpath)
 
         f.close()
         QtCore.QCoreApplication.instance().quit()
