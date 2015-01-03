@@ -1,6 +1,7 @@
 import sys
 import win32api
 import os
+#import ctypes
 from PyQt4 import QtGui, QtCore
 
 class Gooey(QtGui.QWidget):
@@ -11,6 +12,8 @@ class Gooey(QtGui.QWidget):
         self.initUI()
 
     def initUI(self):
+
+        self.setWindowIcon(QtGui.QIcon('icon.svg'))
 
         runButton = QtGui.QPushButton("Run")
         cancelButton = QtGui.QPushButton("Cancel")
@@ -116,6 +119,8 @@ def main():
 
     app = QtGui.QApplication(sys.argv)
     ex = Gooey()
+    #myappid = 'kwikadi.raidx.1.0.0'
+    #ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
     sys.exit(app.exec_())
 
 
