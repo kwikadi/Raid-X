@@ -3,7 +3,7 @@ Raid-X
 
 Zero byte mirroring for Windows.
 
-![Properties](/Raid-X/screenshot.png)
+![Properties](/screenshot.png)
 
 Idea inspired from <a href= "https://github.com/iCHAIT/0xMirror">iChait's 0xMirror repo </a>, with some changes.
 (The repo works for macs, so head there for non-windows solutions)
