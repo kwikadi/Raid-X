@@ -83,6 +83,8 @@ class Gooey(QtGui.QWidget):
         new_destination = str(destination) + "\Backup"
         if not os.path.exists(new_destination): os.makedirs(new_destination)
 
+        fileUnable = open(new_destination + "\\unabletocreate.txt" ,"w")
+
         for source in sources:
             for root, dirs, files in os.walk(source, topdown=False):
 
@@ -92,10 +94,11 @@ class Gooey(QtGui.QWidget):
                     destpath = destpath.replace(source,"")
                     temp_source = source.replace(":", " drive")
                     destpath = new_destination + "\\" + temp_source + "\\" + destpath
-                    f_temp = open(destpath,"w").close()
-                    #make file here.
-                    #Add basic data about file, like where it was taken from and when it was last modified.
-                    f.write(destpath + "\n")
+                    try:
+                        f_temp = open(destpath,"w").close()
+
+                    except:
+                        fileUnable.write(destpath + "\n")
 
                 for name in dirs:
 
@@ -103,7 +106,7 @@ class Gooey(QtGui.QWidget):
                     destpath = destpath.replace(source,"")
                     temp_source = source.replace(":", " drive")
                     destpath = new_destination + "\\" + temp_source + "\\" + destpath
-                    f.write(destpath + "\n")
+
                     if not os.path.exists(destpath):
                         os.makedirs(destpath)
 
