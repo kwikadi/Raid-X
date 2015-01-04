@@ -91,7 +91,9 @@ class Gooey(QtGui.QWidget):
 
     def actualCode(self):
 
-        #self.statusBar.showMessage("Not ready at ALLLL")
+        filecomplete = 0
+        foldercomplete = 0
+        errors = 0
         sources = []
         for i in drivelist:
             if i.isChecked():
@@ -114,9 +116,13 @@ class Gooey(QtGui.QWidget):
                     destpath = new_destination + "\\" + temp_source + "\\" + destpath
                     try:
                         f_temp = open(destpath,"w").close()
+                        filecomplete += 1
 
                     except:
                         fileUnable.write(destpath + "\n")
+                        errors += 1
+                    finally:
+                        self.updateStatusBar(filecomplete,foldercomplete,errors)
 
                 for name in dirs:
 
@@ -127,8 +133,13 @@ class Gooey(QtGui.QWidget):
 
                     if not os.path.exists(destpath):
                         os.makedirs(destpath)
+                        foldercomplete += 1
+                    self.updateStatusBar(filecomplete,foldercomplete,errors)
 
-        QtCore.QCoreApplication.instance().quit()
+        self.bar.showMessage("Backup complete. " + str(errors) + " faults. ")
+
+    def updateStatusBar(self,files,folders,errors):
+        self.bar.showMessage("Backup in progress. " + str(files) + " files, " + str(folders) + " folders backed up, with " + str(errors) + " faults.")
 
 def main():
 
