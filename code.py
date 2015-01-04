@@ -4,16 +4,31 @@ import os
 #import ctypes
 from PyQt4 import QtGui, QtCore
 
+
+class Application(QtGui.QMainWindow):
+    def __init__(self, parent=None):
+
+        super(Application, self).__init__(parent)
+        self.gui = Gooey(self)
+        self.setCentralWidget(self.gui)
+        self.setGeometry(300, 300, 500, 250)
+        self.setWindowTitle('Raid-X')
+
+        self.show()
+
+
 class Gooey(QtGui.QWidget):
 
-    def __init__(self):
-        super(Gooey, self).__init__()
+    def __init__(self,parent):
+        super(Gooey, self).__init__(parent)
 
         self.initUI()
 
     def initUI(self):
-
         self.setWindowIcon(QtGui.QIcon('icon.svg'))
+
+        self.bar = QtGui.QStatusBar(self)
+        self.bar.showMessage("Ready")
 
         runButton = QtGui.QPushButton("Run")
         cancelButton = QtGui.QPushButton("Cancel")
@@ -54,6 +69,9 @@ class Gooey(QtGui.QWidget):
         h5box = QtGui.QHBoxLayout()
         h5box.addWidget(driveSelectLabel)
 
+        h6box = QtGui.QHBoxLayout()
+        h6box.addWidget(self.bar)
+
         vbox = QtGui.QVBoxLayout()
         vbox.addLayout(h5box)
         vbox.addLayout(h4box)
@@ -61,13 +79,9 @@ class Gooey(QtGui.QWidget):
         vbox.addLayout(h2box)
         vbox.addStretch(1)
         vbox.addLayout(hbox)
+        vbox.addLayout(h6box)
 
         self.setLayout(vbox)
-
-        self.setGeometry(300, 300, 500, 250)
-        self.setWindowTitle('Raid-X')
-        self.show()
-
 
     def showDialog(self):
 
@@ -77,6 +91,7 @@ class Gooey(QtGui.QWidget):
 
     def actualCode(self):
 
+        #self.statusBar.showMessage("Not ready at ALLLL")
         sources = []
         for i in drivelist:
             if i.isChecked():
@@ -118,7 +133,7 @@ class Gooey(QtGui.QWidget):
 def main():
 
     app = QtGui.QApplication(sys.argv)
-    ex = Gooey()
+    ex = Application()
     #myappid = 'kwikadi.raidx.1.0.0'
     #ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
     sys.exit(app.exec_())
