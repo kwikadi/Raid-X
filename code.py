@@ -1,6 +1,7 @@
 import sys
 import win32api
 import os
+import scandir
 from PyQt4 import QtGui, QtCore
 
 
@@ -89,9 +90,10 @@ class Gooey(QtGui.QWidget):
 
     def actualCode(self):
 
-        filecomplete = 0
-        foldercomplete = 0
-        errors = 0
+        filess=0
+        folders=0
+        errors=0
+        self.bar.showMessage("Backup in progress...")
         sources = []
         for i in drivelist:
             if i.isChecked():
@@ -99,12 +101,13 @@ class Gooey(QtGui.QWidget):
 
         destination = self.destTextField.toPlainText()
         new_destination = str(destination) + "\Backup"
+
         if not os.path.exists(new_destination): os.makedirs(new_destination)
 
-        fileUnable = open(new_destination + "\\unabletocreate.txt" ,"w")
+        fileUnable = open(new_destination+"\\unabletocreate.txt", "w")
 
         for source in sources:
-            for root, dirs, files in os.walk(source, topdown=False):
+            for root, dirs, files in scandir.walk(source, topdown=False):
 
                 for name in files:
 
@@ -114,13 +117,11 @@ class Gooey(QtGui.QWidget):
                     destpath = new_destination + "\\" + temp_source + "\\" + destpath
                     try:
                         f_temp = open(destpath,"w").close()
-                        filecomplete += 1
+                        filess += 1
 
                     except:
-                        fileUnable.write(destpath + "\n")
-                        errors += 1
-                    finally:
-                        self.updateStatusBar(filecomplete,foldercomplete,errors)
+                        fileUnable.write(os.path.join(root,name) + "\n")
+                        errors+=1
 
                 for name in dirs:
 
@@ -131,13 +132,10 @@ class Gooey(QtGui.QWidget):
 
                     if not os.path.exists(destpath):
                         os.makedirs(destpath)
-                        foldercomplete += 1
-                    self.updateStatusBar(filecomplete,foldercomplete,errors)
+                    folders+=1
+        fileUnable.close()
 
-        self.bar.showMessage("Backup complete. " + str(errors) + " faults. ")
-
-    def updateStatusBar(self,files,folders,errors):
-        self.bar.showMessage("Backup in progress. " + str(files) + " files, " + str(folders) + " folders backed up, with " + str(errors) + " faults.")
+        self.bar.showMessage("Backup complete. Files: " + str(filess) +" , Folders: " + str(folders) + " , Errors: " + str(errors))
 
 def main():
 
