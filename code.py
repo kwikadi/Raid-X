@@ -49,6 +49,11 @@ class Gooey(QtGui.QWidget):
         runButton.clicked.connect(self.actualCode)
         cancelButton.clicked.connect(QtCore.QCoreApplication.instance().quit)
 
+        error_files = QtGui.QCheckBox('Create file listing files that couldn\'t be created.')
+
+        h7box = QtGui.QHBoxLayout()
+        h7box.addWidget(error_files)
+
         hbox = QtGui.QHBoxLayout()
         hbox.addStretch(1)
         hbox.addWidget(runButton)
@@ -76,6 +81,7 @@ class Gooey(QtGui.QWidget):
         vbox.addLayout(h4box)
         vbox.addLayout(h3box)
         vbox.addLayout(h2box)
+        vbox.addLayout(h7box)
         vbox.addStretch(1)
         vbox.addLayout(hbox)
         vbox.addLayout(h6box)
@@ -109,6 +115,17 @@ class Gooey(QtGui.QWidget):
         for source in sources:
             for root, dirs, files in scandir.walk(source, topdown=False):
 
+                '''for name in dirs:
+
+                    destpath = os.path.join(root, name)
+                    destpath = destpath.replace(source,"")
+                    temp_source = source.replace(":", " drive")
+                    destpath = new_destination + "\\" + temp_source + "\\" + destpath
+
+                    if not os.path.exists(destpath):
+                        os.makedirs(destpath)
+                    folders+=1'''
+
                 for name in files:
 
                     destpath = os.path.join(root, name)
@@ -123,16 +140,6 @@ class Gooey(QtGui.QWidget):
                         fileUnable.write(os.path.join(root,name) + "\n")
                         errors+=1
 
-                for name in dirs:
-
-                    destpath = os.path.join(root, name)
-                    destpath = destpath.replace(source,"")
-                    temp_source = source.replace(":", " drive")
-                    destpath = new_destination + "\\" + temp_source + "\\" + destpath
-
-                    if not os.path.exists(destpath):
-                        os.makedirs(destpath)
-                    folders+=1
         fileUnable.close()
 
         self.bar.showMessage("Backup complete. Files: " + str(filess) +" , Folders: " + str(folders) + " , Errors: " + str(errors))
