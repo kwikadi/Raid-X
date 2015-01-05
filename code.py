@@ -99,8 +99,12 @@ class Gooey(QtGui.QWidget):
         filess=0
         folders=0
         errors=0
+        createfiles = False
         self.bar.showMessage("Backup in progress...")
         sources = []
+        if error_files.isChecked():
+            createfiles = True
+
         for i in drivelist:
             if i.isChecked():
                 sources.append(drives[drivelist.index(i)])
@@ -110,12 +114,13 @@ class Gooey(QtGui.QWidget):
 
         if not os.path.exists(new_destination): os.makedirs(new_destination)
 
-        fileUnable = open(new_destination+"\\unabletocreate.txt", "w")
+        if createfiles:
+            fileUnable = open(new_destination+"\\unabletocreate.txt", "w")
 
         for source in sources:
             for root, dirs, files in scandir.walk(source, topdown=False):
 
-                '''for name in dirs:
+                for name in dirs:
 
                     destpath = os.path.join(root, name)
                     destpath = destpath.replace(source,"")
@@ -124,7 +129,7 @@ class Gooey(QtGui.QWidget):
 
                     if not os.path.exists(destpath):
                         os.makedirs(destpath)
-                    folders+=1'''
+                    folders+=1
 
                 for name in files:
 
@@ -137,10 +142,11 @@ class Gooey(QtGui.QWidget):
                         filess += 1
 
                     except:
-                        fileUnable.write(os.path.join(root,name) + "\n")
+                        if createfiles:
+                            fileUnable.write(os.path.join(root,name) + "\n")
                         errors+=1
-
-        fileUnable.close()
+        if createfiles:
+            fileUnable.close()
 
         self.bar.showMessage("Backup complete. Files: " + str(filess) +" , Folders: " + str(folders) + " , Errors: " + str(errors))
 
