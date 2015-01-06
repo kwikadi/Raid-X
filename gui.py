@@ -108,8 +108,8 @@ class Gooey(QtGui.QWidget):
             if i.isChecked():
                 sources.append(drives[drivelist.index(i)])
 
-        values = actualCode(sources, destination, createfiles)
-        self.bar.showMessage("Backup complete. Files: " + str(values[0]) +" , Folders: " + str(values[1]) + " , Errors: " + str(values[2]))
+        errors = actualCode(sources, destination, createfiles)
+        self.bar.showMessage("Backup complete.  Errors: " + str(errors))
 
 
 def main():
