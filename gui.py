@@ -1,7 +1,8 @@
 import sys
 import win32api
-from code import actualCode
 from PyQt4 import QtGui, QtCore
+from code import *
+import time
 
 
 class Application(QtGui.QMainWindow):
@@ -29,7 +30,7 @@ class Gooey(QtGui.QWidget):
         self.bar.showMessage("Ready")
 
         runButton = QtGui.QPushButton("Run")
-        cancelButton = QtGui.QPushButton("Cancel")
+        closeButton = QtGui.QPushButton("Close")
         browseButton = QtGui.QPushButton("Browse")
         self.destTextField = QtGui.QTextEdit("G:")
         destFolderLabel = QtGui.QLabel('Please select the destination folder:', self)
@@ -46,7 +47,7 @@ class Gooey(QtGui.QWidget):
 
         browseButton.clicked.connect(self.showDialog)
         runButton.clicked.connect(self.startRun)
-        cancelButton.clicked.connect(QtCore.QCoreApplication.instance().quit)
+        closeButton.clicked.connect(QtCore.QCoreApplication.instance().quit)
 
         global error_files
         error_files = QtGui.QCheckBox('Create file listing files that couldn\'t be created.')
@@ -57,7 +58,7 @@ class Gooey(QtGui.QWidget):
         hbox = QtGui.QHBoxLayout()
         hbox.addStretch(1)
         hbox.addWidget(runButton)
-        hbox.addWidget(cancelButton)
+        hbox.addWidget(closeButton)
 
         h2box = QtGui.QHBoxLayout()
         h2box.addWidget(self.destTextField)
@@ -100,7 +101,6 @@ class Gooey(QtGui.QWidget):
         destination = str(self.destTextField.toPlainText())
         createfiles = False
 
-        self.bar.showMessage("Backup in progress...")
         if error_files.isChecked():
             createfiles = True
 
@@ -108,8 +108,17 @@ class Gooey(QtGui.QWidget):
             if i.isChecked():
                 sources.append(drives[drivelist.index(i)])
 
-        errors = actualCode(sources, destination, createfiles)
-        self.bar.showMessage("Backup complete.  Errors: " + str(errors))
+        self.bar.showMessage("Backup in progress...")
+        back_process = Background(sources,destination, createfiles)
+        back_process.start()
+        while back_process.errors is not -1:
+            time.sleep(1)
+
+        #errors = thread.start_new_thread(actualCode,(sources, destination, createfiles))
+
+            self.bar.showMessage("Backup complete.  Errors: " + str(back_process.errors))
+
+        self.bar.showMessage("Backup complete.")
 
 
 def main():

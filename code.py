@@ -1,47 +1,57 @@
 import scandir
 import os
+import threading
 
-def actualCode(sources,destination,createfiles=True):
+class Background(threading.Thread):
+    def __init__(self,sources,destination,createfiles=True):
+        threading.Thread.__init__(self)
+        self.sources = sources
+        self.createfiles = createfiles
+        self.destination = destination
+        self.errors = 0
 
-    errors=0
-    data_gui = []
+    def run(self):
 
-    new_destination = destination + "\Backup"
+        data_gui = []
 
-    if not os.path.exists(new_destination): os.makedirs(new_destination)
+        new_destination = self.destination + "\Backup"
 
-    if createfiles:
-        fileUnable = open(new_destination+"\\unabletocreate.txt", "w")
+        if not os.path.exists(new_destination): os.makedirs(new_destination)
 
-    for source in sources:
-        for root, dirs, files in scandir.walk(source, topdown=False):
+        if self.createfiles:
+            fileUnable = open(new_destination+"\\unabletocreate.txt", "w")
 
-            for name in dirs:
+        for source in self.sources:
+            for root, dirs, files in scandir.walk(source, topdown=False):
 
-                destpath = os.path.join(root, name)
-                destpath = destpath.replace(source,"")
-                temp_source = source.replace(":", " drive")
-                destpath = new_destination + "\\" + temp_source + "\\" + destpath
+                for name in dirs:
 
-                if not os.path.exists(destpath):
-                    os.makedirs(destpath)
+                    destpath = os.path.join(root, name)
+                    destpath = destpath.replace(source,"")
+                    temp_source = source.replace(":", " drive")
+                    destpath = new_destination + "\\" + temp_source + "\\" + destpath
 
-            for name in files:
+                    if not os.path.exists(destpath):
+                        os.makedirs(destpath)
 
-                destpath = os.path.join(root, name)
-                destpath = destpath.replace(source,"")
-                temp_source = source.replace(":", " drive")
-                destpath = new_destination + "\\" + temp_source + "\\" + destpath
-                try:
-                    f_temp = open(destpath,"w").close()
+                for name in files:
 
-                except:
-                    if createfiles:
-                        fileUnable.write(os.path.join(root,name) + "\n")
-                    errors+=1
-    if createfiles:
-        fileUnable.close()
+                    destpath = os.path.join(root, name)
+                    destpath = destpath.replace(source,"")
+                    temp_source = source.replace(":", " drive")
+                    destpath = new_destination + "\\" + temp_source + "\\" + destpath
+                    try:
+                        f_temp = open(destpath,"w").close()
 
-    return errors
+                    except:
+                        if self.createfiles:
+                            fileUnable.write(os.path.join(root,name) + "\n")
+                        self.errors+=1
+        if self.createfiles:
+            fileUnable.close()
+
+        self.errors = -1
+        print "Backup complete"
+        return self.errors
 
 
