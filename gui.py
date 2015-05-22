@@ -21,11 +21,9 @@ class Gooey(QtGui.QWidget):
 
     def __init__(self,parent):
         super(Gooey, self).__init__(parent)
-
         self.initUI()
 
     def initUI(self):
-
         self.bar = QtGui.QStatusBar(self)
         self.bar.showMessage("Ready")
 
@@ -51,7 +49,7 @@ class Gooey(QtGui.QWidget):
 
         global error_files
         error_files = QtGui.QCheckBox('Create file listing files that couldn\'t be created.')
-
+        
         h7box = QtGui.QHBoxLayout()
         h7box.addWidget(error_files)
 
@@ -90,13 +88,10 @@ class Gooey(QtGui.QWidget):
         self.setLayout(vbox)
 
     def showDialog(self):
-
         fname = QtGui.QFileDialog.getExistingDirectory(self, 'Open folder', 'G:')
-
         self.destTextField.setPlainText(fname)
 
     def startRun(self):
-
         sources = []
         destination = str(self.destTextField.toPlainText())
         createfiles = False
@@ -107,17 +102,15 @@ class Gooey(QtGui.QWidget):
         for i in drivelist:
             if i.isChecked():
                 sources.append(drives[drivelist.index(i)])
-
-        self.bar.showMessage("Backup in progress...")
         back_process = Background(sources,destination, createfiles)
         back_process.start()
         while back_process.errors is not -1:
-            time.sleep(1)
-
-        #errors = thread.start_new_thread(actualCode,(sources, destination, createfiles))
-
-            self.bar.showMessage("Backup complete.  Errors: " + str(back_process.errors))
-
+            time.sleep(0.4)
+            self.bar.showMessage("Backup in progress.")
+            time.sleep(0.4)
+            self.bar.showMessage("Backup in progress..")
+            time.sleep(0.4)
+            self.bar.showMessage("Backup in progress...")
         self.bar.showMessage("Backup complete.")
 
 
