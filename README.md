@@ -5,7 +5,7 @@ Zero byte mirroring for Windows.
 
 ![Properties](/screenshot.png)
 
-Idea inspired from <a href= "https://github.com/iCHAIT/0xMirror">iChait's 0xMirror repo </a>, with some changes.
+Idea inspired from <a href= "https://github.com/iCHAIT/Python-Scripts/tree/master/OS%20X%20Mirror">iCHAIT's </a> and <a href="https://github.com/dufferzafar/Python-Scripts/tree/master/0xMirror"> dufferzafar's </a> 0xMirror, with some changes.
 (The repo works for macs, so head there for non-windows solutions)
 
 1. The script traverses the File system, and creates an empty directory structure.
